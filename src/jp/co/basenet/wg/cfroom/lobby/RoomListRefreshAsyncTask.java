@@ -54,14 +54,12 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
         int status = 1101;
         byte[] message = "ROOM_LIST_REFRESH".getBytes(Charset.forName("UTF-8"));
 
-        int allLength = 4 + message.length;
-        int messageLenght = message.length;
+        int allLength = message.length;
 
         try {
-            ByteBuffer buffer = ByteBuffer.allocate(12 + messageLenght);
+            ByteBuffer buffer = ByteBuffer.allocate(8 + allLength);
             buffer.putInt(status);
             buffer.putInt(allLength);
-            buffer.putInt(messageLenght);
             buffer.put(message);
             buffer.flip();
 
