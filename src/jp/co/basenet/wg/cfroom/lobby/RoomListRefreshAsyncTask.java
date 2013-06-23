@@ -2,19 +2,22 @@ package jp.co.basenet.wg.cfroom.lobby;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import jp.co.basenet.wg.cfroom.R;
 import jp.co.basenet.wg.cfroom.beans.RoomButtonInfo;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Integer > {
     private LobbyActivity mainThread;
@@ -32,7 +35,7 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
 
         } else {
             ScrollView sv = (ScrollView)mainThread.findViewById(R.id.scRoomList);
-
+            sv.removeAllViews();
             //TEST
             LinearLayout linearLayout = new LinearLayout(mainThread);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -45,6 +48,7 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
 
             // ScrollView に View を追加
             sv.addView(linearLayout);
+            sv.fullScroll(View.FOCUS_UP);
         }
     }
 
@@ -82,9 +86,9 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
                     int length = buffer.getInt();
                     byte[] bytes = new byte[length];
                     buffer.get(bytes);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-                    ObjectInputStream ois = new ObjectInputStream(bis);
-                    roomButtonList = (ArrayList<RoomButtonInfo>)ois.readObject();
+                    String roomButtonListJson = new String(bytes, "UTF-8");
+                    Type listType = new TypeToken<ArrayList<RoomButtonInfo>>(){}.getType();
+                    roomButtonList = new Gson().fromJson(roomButtonListJson, listType);
                     return(1);
                 }
             }

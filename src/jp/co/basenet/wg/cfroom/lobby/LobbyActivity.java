@@ -47,7 +47,7 @@ public class LobbyActivity extends Activity{
             @Override
             public void onClick(View v){
                 //TODO
-
+                refresh();
             }
         });
     }
