@@ -29,6 +29,7 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
         if(result == 0) {
             //失敗
             //TODO
+
         } else {
             ScrollView sv = (ScrollView)mainThread.findViewById(R.id.scRoomList);
 
