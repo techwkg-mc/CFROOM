@@ -42,7 +42,15 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
 
             for (int i = 0; i < roomButtonList.size(); i++) {
                 Button button = new Button(mainThread);
-                button.setText("Room:" + roomButtonList.get(i).getRoomName() + "Status:" + roomButtonList.get(i).getStatus() );
+                button.setText("Room:" + roomButtonList.get(i).getRoomName() + "Status:" + roomButtonList.get(i).getStatus());
+                final int roomId = roomButtonList.get(i).getId();
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v){
+                        new RoomKnockAsyncTask(mainThread, roomId).execute();
+                    }
+                });
+
                 linearLayout.addView(button);
             }
 

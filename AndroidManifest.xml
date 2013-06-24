@@ -26,6 +26,7 @@
     <activity android:name=".room.RoomActivity"
               android:screenOrientation="landscape"></activity>
     <activity android:name=".lobby.LobbyActivity"></activity>
+    <activity android:name=".roominfo.RoomInfoActivity"></activity>
 </application>
 
 </manifest>

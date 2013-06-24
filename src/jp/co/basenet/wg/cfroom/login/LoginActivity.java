@@ -12,9 +12,9 @@ import jp.co.basenet.wg.cfroom.thread.ThreadReveive;
 import jp.co.basenet.wg.cfroom.thread.ThreadSend;
 
 public class LoginActivity extends Activity {
-	
-	private ThreadSend ts;
-	private ThreadReveive tr;
+
+	//private ThreadSend ts;
+	//private ThreadReveive tr;
 	private SocketChannel sc;
 	
 	public void setSocket(SocketChannel sc) {

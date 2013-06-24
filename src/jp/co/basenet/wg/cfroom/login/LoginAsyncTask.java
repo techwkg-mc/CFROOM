@@ -90,7 +90,7 @@ public class LoginAsyncTask extends AsyncTask<Integer, Integer, Integer >{
 					int length = buffer.getInt();
 					byte[] bytes = new byte[length];
 					buffer.get(bytes);
-					String body = new String(bytes, "UTF-8");
+					String body = new String(bytes, Charset.forName("UTF-8"));
 					if(statue == 0 && "SUCCESS".equals(body)) {
 						loginThread.setSocket(sc);
 						return(1);
