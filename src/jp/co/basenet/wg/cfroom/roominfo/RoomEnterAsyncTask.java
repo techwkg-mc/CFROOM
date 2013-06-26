@@ -10,9 +10,6 @@ import java.nio.charset.Charset;
 
 import jp.co.basenet.wg.cfroom.room.RoomActivity;
 
-/**
- * Created by hoshinomai on 2013/06/26.
- */
 public class RoomEnterAsyncTask extends AsyncTask<Integer, Integer, Integer > {
     RoomInfoActivity mainThread;
     private int roomId;
