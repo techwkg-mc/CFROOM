@@ -47,11 +47,16 @@ public class RoomInfoActivity extends Activity {
             }
         });
 
+
         //入室
-        //TODO
-
-
-
+        //TODORoomEnterAsyncTask
+        Button btnEnterRoom = (Button)findViewById(R.id.btnEnterRoom);
+        btnEnterRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                new RoomEnterAsyncTask(RoomInfoActivity.this, roomDetailInfo.getId()).execute();
+            }
+        });
 
     }
 }

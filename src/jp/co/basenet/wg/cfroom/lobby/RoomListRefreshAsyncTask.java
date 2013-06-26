@@ -47,7 +47,7 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v){
-                        new RoomKnockAsyncTask(mainThread, roomId).execute();
+                        new RoomDetailInfoAsyncTask(mainThread, roomId).execute();
                     }
                 });
 
@@ -87,7 +87,7 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
                 }
                 buffer.flip();
                 while(buffer.remaining() > 0) {
-                    int statue = buffer.getInt();
+                    status = buffer.getInt();
                     if(status != 1201) {
                         //TODO
                     }

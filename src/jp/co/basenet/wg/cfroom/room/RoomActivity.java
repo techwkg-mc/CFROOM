@@ -23,6 +23,7 @@ import jp.co.basenet.wg.cfroom.thread.ThreadSend;
 public class RoomActivity extends Activity {
 	
 	public MainHandler myHandler;
+    public static int roomId;
 	private ThreadSend ts;
 	private ThreadReveive tr;
 	public static SocketChannel sc;

@@ -15,12 +15,12 @@ import java.nio.charset.Charset;
 import jp.co.basenet.wg.cfroom.beans.RoomDetailInfo;
 import jp.co.basenet.wg.cfroom.roominfo.RoomInfoActivity;
 
-public class RoomKnockAsyncTask extends AsyncTask<Integer, Integer, Integer > {
+public class RoomDetailInfoAsyncTask extends AsyncTask<Integer, Integer, Integer > {
     private LobbyActivity mainThread;
     private RoomDetailInfo roomDetailInfo;
     private int roomId;
 
-    public RoomKnockAsyncTask(LobbyActivity mainThread, int roomId) {
+    public RoomDetailInfoAsyncTask(LobbyActivity mainThread, int roomId) {
         this.mainThread = mainThread;
         this.roomId = roomId;
     }
@@ -39,6 +39,8 @@ public class RoomKnockAsyncTask extends AsyncTask<Integer, Integer, Integer > {
         int status = 1102;
         byte[] message = String.valueOf(this.roomId).getBytes(Charset.forName("UTF-8"));
 
+        //TODO
+        //パスワード？？追加予定
         int allLength = message.length;
 
         try {
@@ -60,7 +62,7 @@ public class RoomKnockAsyncTask extends AsyncTask<Integer, Integer, Integer > {
                 }
                 buffer.flip();
                 while(buffer.remaining() > 0) {
-                    int statue = buffer.getInt();
+                    status = buffer.getInt();
                     if(status != 1202) {
                         //TODO
                     }
@@ -75,7 +77,7 @@ public class RoomKnockAsyncTask extends AsyncTask<Integer, Integer, Integer > {
             }
             return(0);
         } catch (Exception e) {
-            Log.d("RoomKnockAsyncTask", e.getMessage());
+            Log.d("RoomDetailInfoAsyncTask", e.getMessage());
             if(mainThread.sc != null) {
                 try {
                     mainThread.sc.close();
