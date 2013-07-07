@@ -1,42 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-    </LinearLayout>
-
-    <Button
+   <!-- <Button
         android:id="@+id/btnExit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ログアウト" />
+        android:text="ログアウト" /> -->
     
-   <jp.co.basenet.wg.cfroom.room.CanvasView
+   <jp.co.basenet.wg.cfroom.room.CustomViewPager
         android:id="@+id/canvasView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-    />
-<!--  <EditText
-        android:id="@+id/txtSend"
-        android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
-        android:layout_weight="0.56" />
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="送信" />--> 
+        android:layout_above="@+id/barControl"/>
+    <RelativeLayout
+            style="@android:style/ButtonBar"
+            android:id="@+id/barControl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+        <Button
+                android:id="@+id/btnBackToLobby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="退室"
+                android:layout_alignParentLeft="true"/>
+        <Button
+                android:id="@+id/btnShowMarker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="入室"
+                android:layout_alignParentRight="true"/>
 
-</LinearLayout>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="開始"
+                android:id="@+id/btnStart"
+                android:layout_toLeftOf="@+id/btnMemberList"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="参加者"
+                android:id="@+id/btnMemberList"
+                android:layout_toLeftOf="@+id/btnSyncSet"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="同期"
+                android:id="@+id/btnSyncSet"
+                android:layout_toLeftOf="@+id/btnMarkerOnOFF"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="マーカー"
+                android:id="@+id/btnMarkerOnOFF"
+                android:layout_toLeftOf="@+id/btnMarkerSet"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="設定"
+                android:id="@+id/btnMarkerSet"
+                android:layout_toLeftOf="@+id/btnClear"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="クリア"
+                android:id="@+id/btnClear"
+                android:layout_alignParentRight="false"
+                android:layout_toLeftOf="@+id/btnShowMarker"/>
+    </RelativeLayout>
+</RelativeLayout>

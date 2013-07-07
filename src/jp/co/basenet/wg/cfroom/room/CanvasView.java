@@ -5,18 +5,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
+import android.widget.ImageView;
 
-public class CanvasView extends View {
+public class CanvasView extends ImageView {
 	private Path path;
 	private Paint p;
-
+/*
 	public CanvasView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
-	}
+	}*/
 	
 	public CanvasView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -48,14 +50,17 @@ public class CanvasView extends View {
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN :
 				path.moveTo(event.getX(), event.getY());
+                Log.e("","ACTION_DOWN" );
 				break;
 
 			case MotionEvent.ACTION_MOVE:
 				path.lineTo(event.getX(), event.getY());
+                Log.e("","ACTION_MOVE" );
 				break;
 				
 			case MotionEvent.ACTION_UP :
 				path.lineTo(event.getX(), event.getY());
+                Log.e("","ACTION_UP" );
 				break;
 		}
 		invalidate();

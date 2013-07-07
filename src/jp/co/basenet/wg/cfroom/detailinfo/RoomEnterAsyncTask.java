@@ -1,4 +1,4 @@
-package jp.co.basenet.wg.cfroom.roominfo;
+package jp.co.basenet.wg.cfroom.detailinfo;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -49,7 +49,6 @@ public class RoomEnterAsyncTask extends AsyncTask<Integer, Integer, Integer > {
             //送信
             mainThread.sc.write(buffer);
 
-            //結果取得
             //結果取得
             buffer = ByteBuffer.allocate(1024*10);
             int numBytesRead;

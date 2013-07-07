@@ -1,4 +1,4 @@
-package jp.co.basenet.wg.cfroom.roominfo;
+package jp.co.basenet.wg.cfroom.detailinfo;
 
 import android.app.Activity;
 import android.content.Intent;

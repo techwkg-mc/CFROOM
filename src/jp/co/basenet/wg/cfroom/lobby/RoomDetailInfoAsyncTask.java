@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import jp.co.basenet.wg.cfroom.beans.RoomDetailInfo;
-import jp.co.basenet.wg.cfroom.roominfo.RoomInfoActivity;
+import jp.co.basenet.wg.cfroom.detailinfo.RoomInfoActivity;
 
 public class RoomDetailInfoAsyncTask extends AsyncTask<Integer, Integer, Integer > {
     private LobbyActivity mainThread;

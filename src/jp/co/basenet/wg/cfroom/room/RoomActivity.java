@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,12 +36,14 @@ public class RoomActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+
+        fileListRefresh();
         
-    	ts = new ThreadSend(sc);
-    	ts.start();
-    	tr = new ThreadReveive(sc, RoomActivity.this);
-    	tr.start();
-        
+    	//ts = new ThreadSend(sc);
+    	//ts.start();
+    	//tr = new ThreadReveive(sc, RoomActivity.this);
+    	//tr.start();
+        /*
         Button btn1 = (Button)findViewById(R.id.btnExit);
         btn1.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -55,23 +58,15 @@ public class RoomActivity extends Activity {
                     RoomActivity.this.startActivity(intent);
 				}
             }
-        });
-        
-		CanvasView cv = (CanvasView)findViewById(R.id.canvasView1);
-		
-		cv.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				String message = String.format("A%dX%fY%f", event.getAction(), event.getX(), event.getY());
-            	Message msg = new Message();
-            	Bundle b = new Bundle();
-            	b.putString("sendbody", message);
-            	msg.setData(b);
-				ts.myHandler.sendMessage(msg);
-				return false;
-			}
-		});   
+        });*/
+
+        CustomViewPager vp = (CustomViewPager)findViewById(R.id.canvasView1);
+        ViewPageAdapter vpa = new ViewPageAdapter(this, ts);
+        vp.setAdapter(vpa);
+        int currentPosition = 0;
+        vp.setCurrentItem(currentPosition);
+        vp.setScanScroll(true);
+
         myHandler = new MainHandler();
     }
 	
@@ -89,17 +84,22 @@ public class RoomActivity extends Activity {
 			super.handleMessage(msg);
 			switch(msg.getData().getInt("statues")) {
 			case 3:
+                /*
 				String message = msg.getData().getString("recvbody");
 				int action = Integer.parseInt(message.substring(1, 2));
 				float x = Float.parseFloat(message.substring(message.indexOf("X") + 1, message.indexOf("Y") - message.indexOf("X") + 2));
 				float y = Float.parseFloat(message.substring(message.indexOf("Y") + 1));
 				CanvasView cv = (CanvasView)findViewById(R.id.canvasView1);
-				cv.drawFromSocket(action, x, y);
+				cv.drawFromSocket(action, x, y);*/
 				break;
 			default:
 				break;
 			}
 		}
 	}
+
+    private void fileListRefresh() {
+        new FileListRefreshAsyncTask(RoomActivity.this, roomId).execute();
+    }
 }
 
