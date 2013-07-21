@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jp.co.basenet.wg.cfroom.R;
 import jp.co.basenet.wg.cfroom.beans.RoomButtonInfo;
@@ -79,28 +80,52 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
             mainThread.sc.write(buffer);
 
             //結果取得
-            buffer = ByteBuffer.allocate(1024*10);
-            int numBytesRead;
-            while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
-                if(numBytesRead == 0 ) {
+            buffer = ByteBuffer.allocate(532*10);
+            boolean firstRecord = true;
+            int seqNo = 0;
+            int recordCount = 0;
+            byte[] tempRecord = null;
+            byte[] tempResult = null;
+            HashMap<Integer, byte[]> resultMap = new HashMap<Integer, byte[]>();
+            while(mainThread.sc.read(buffer) != -1) {
+                if(buffer.position() < 532) {
                     continue;
                 }
                 buffer.flip();
-                while(buffer.remaining() > 0) {
+                while(buffer.remaining() >= 532) {
                     status = buffer.getInt();
+                    buffer.getInt();//currentSize
+                    buffer.getInt();//fullSize
+                    seqNo = buffer.getInt();
+                    recordCount = buffer.getInt();
+                    tempRecord = new byte[512];
+                    buffer.get(tempRecord);
                     if(status != 1201) {
-                        //TODO
+                        continue;
                     }
-                    int length = buffer.getInt();
-                    byte[] bytes = new byte[length];
-                    buffer.get(bytes);
-                    String roomButtonListJson = new String(bytes, "UTF-8");
-                    Type listType = new TypeToken<ArrayList<RoomButtonInfo>>(){}.getType();
-                    roomButtonList = new Gson().fromJson(roomButtonListJson, listType);
-                    return(1);
+                    if(firstRecord) {
+                        //一つ目のレコード
+                        tempResult = new byte[512 * recordCount];
+                        firstRecord = false;
+                    }
+                    resultMap.put(seqNo, tempRecord);
+                }
+
+                buffer.compact();
+                if(resultMap.size() == recordCount) {
+                    break;
                 }
             }
-            return(0);
+            if(resultMap.size() > 0) {
+                for(int i = 0; i < resultMap.size(); i++ ) {
+                    System.arraycopy(resultMap.get(i + 1), 0, tempResult, 512 * i, 512);
+                }
+
+                String roomButtonListJson = new String(tempResult, Charset.forName("UTF-8")).trim();
+                Type listType = new TypeToken<ArrayList<RoomButtonInfo>>(){}.getType();
+                roomButtonList = new Gson().fromJson(roomButtonListJson, listType);
+                return(1);
+            }
         } catch (Exception e) {
             Log.d("RoomListRefreshAsyncTask", e.getMessage());
             if(mainThread.sc != null) {
@@ -112,17 +137,7 @@ public class RoomListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
                     ex.printStackTrace();
                 }
             }
-            return(0);
         }
-
-/*
-        roomButtonList = new ArrayList<RoomButtonInfo>();
-        for(int i = 0; i < 10; i++) {
-            RoomButtonInfo rbi = new RoomButtonInfo();
-            rbi.setId(i);
-            rbi.setRoomName("ダミルーム" + i);
-            rbi.setStatus("進行中");
-            roomButtonList.add(rbi);
-        }*/
+        return(0);
     }
 }

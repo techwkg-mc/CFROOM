@@ -60,7 +60,7 @@ public class FileListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
             mainThread.sc.write(buffer);
 
             //結果取得
-            buffer = ByteBuffer.allocate(1024*10);
+            buffer = ByteBuffer.allocate(10240);
             while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
                 if(numBytesRead == 0 ) {
                     continue;
@@ -95,21 +95,38 @@ public class FileListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
 
                 //結果取得
                 //TODO データベースを使うべし
-                buffer = ByteBuffer.allocate(1024*100);
+                boolean firstRecord = true;
+                byte[] bytes = null;
+                int currentSize = 0;
+                int recordSize = 0;
+                buffer = ByteBuffer.allocate(1024);
                 while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
                     if(numBytesRead == 0 ) {
                         continue;
                     }
                     buffer.flip();
-                    status = buffer.getInt();
-                    if(status != 2202) {
-                        //TODO
+                    if(firstRecord) {
+                        status = buffer.getInt();
+                        if(status != 2202) {
+                            //TODO
+                        }
+                        length = buffer.getInt();
+                        bytes = new byte[length];
+                        firstRecord = false;
                     }
-                    length = buffer.getInt();
-                    byte[] bytes = new byte[length];
-                    buffer.get(bytes);
-                    String xxx = new String(bytes);
-                    Log.d("00000","00000");
+                    currentSize = buffer.remaining();
+
+
+
+
+                    // length alllength 追加必要
+
+
+
+                    buffer.get(bytes, recordSize, currentSize);
+                    //buffer.get(bytes);
+                    recordSize += currentSize;
+                    buffer.clear();
                 }
             }
 

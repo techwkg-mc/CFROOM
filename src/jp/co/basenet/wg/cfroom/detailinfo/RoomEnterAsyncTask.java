@@ -50,32 +50,30 @@ public class RoomEnterAsyncTask extends AsyncTask<Integer, Integer, Integer > {
             mainThread.sc.write(buffer);
 
             //結果取得
-            buffer = ByteBuffer.allocate(1024*10);
-            int numBytesRead;
-            while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
-                if(numBytesRead == 0 ) {
+            buffer = ByteBuffer.allocate(1064);
+            while(mainThread.sc.read(buffer) != -1) {
+                if(buffer.position() < 532) {
                     continue;
                 }
                 buffer.flip();
-                while(buffer.remaining() > 0) {
-                    status = buffer.getInt();
-                    if(status != 1203) {
-                        //TODO
-                    }
-                    int length = buffer.getInt();
-                    byte[] bytes = new byte[length];
-                    buffer.get(bytes);
-                    String result = new String(bytes, "UTF-8");
-                    if("SUCCESS".equals(result)) {
-                        return(1);
-                    } else {
-                        //TODO
-                        //パスワード？
-                        return(0);
-                    }
+                status = buffer.getInt();
+                buffer.getInt();//currentSize
+                buffer.getInt();//fullSize
+                buffer.getInt();//seqNo;
+                buffer.getInt();//recordCount
+                byte[] tempRecord = new byte[512];
+                buffer.get(tempRecord);
+                buffer.compact();
+                if(status != 1203) {
+                    continue;
+                }
+                String result = new String(tempRecord, Charset.forName("UTF-8")).trim();
+                if("SUCCESS".equals(result)) {
+                    return(1);
+                } else {
+                    break;
                 }
             }
-            return(0);
         } catch (Exception e) {
             if(mainThread.sc != null) {
                 try {
@@ -86,7 +84,7 @@ public class RoomEnterAsyncTask extends AsyncTask<Integer, Integer, Integer > {
                     ex.printStackTrace();
                 }
             }
-            return(0);
         }
+        return(0);
     }
 }

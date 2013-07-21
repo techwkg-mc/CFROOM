@@ -57,8 +57,10 @@ public class LoginAsyncTask extends AsyncTask<Integer, Integer, Integer >{
         	 while(!sc.finishConnect()) {}
 
         	 //ログイン
-        	 byte[] userName = ((EditText) loginThread.findViewById(R.id.txtUserName)).getText().toString().getBytes(Charset.forName("UTF-8"));
-        	 byte[] password = ((EditText) loginThread.findViewById(R.id.txtPassword)).getText().toString().getBytes(Charset.forName("UTF-8"));
+        	 byte[] userName = ((EditText) loginThread.findViewById(R.id.txtUserName)).getText().toString()
+                     .getBytes(Charset.forName("UTF-8"));
+        	 byte[] password = ((EditText) loginThread.findViewById(R.id.txtPassword)).getText().toString()
+                     .getBytes(Charset.forName("UTF-8"));
         	 int status = 0000;
         	 int allLength = 8 + userName.length + password.length;
         	 int userNameLength = userName.length;
@@ -77,31 +79,35 @@ public class LoginAsyncTask extends AsyncTask<Integer, Integer, Integer >{
         	 sc.write(buffer);
         	 
         	 //結果取得
-        	 buffer = ByteBuffer.allocate(1024);
-        	 int numBytesRead;
-        	 while((numBytesRead = sc.read(buffer)) != -1) {
- 				if(numBytesRead == 0 ) {
-					//
+             //TODO
+        	 buffer = ByteBuffer.allocate(1064);
+        	 while(sc.read(buffer) != -1) {
+ 				if(buffer.position() < 532) {
+                    //１レコードの長さ=532 ( 20 + 512)
 					continue;
 				}
  				buffer.flip();
-				while(buffer.remaining() > 0) {
-					int statue = buffer.getInt();
-					int length = buffer.getInt();
-					byte[] bytes = new byte[length];
-					buffer.get(bytes);
-					String body = new String(bytes, Charset.forName("UTF-8"));
-					if(statue == 0 && "SUCCESS".equals(body)) {
-						loginThread.setSocket(sc);
-						return(1);
-					} else {
-						sc.close();
-						loginThread.setSocket(null);
-						return(0);
-					}
-				}
-        	 }
-        	 return(0);
+                status = buffer.getInt();
+                buffer.getInt();//currentSize
+                buffer.getInt();//fullSize
+                buffer.getInt();//seqNo;
+                buffer.getInt();//recordCount
+                byte[] tempRecord = new byte[512];
+                buffer.get(tempRecord);
+                buffer.compact();
+                if(status != 0001) {
+                    continue;
+                }
+                String result = new String(tempRecord, Charset.forName("UTF-8")).trim();
+                if("SUCCESS".equals(result)) {
+                    loginThread.setSocket(sc);
+                    return(1);
+                } else {
+                    break;
+                }
+             }
+             sc.close();
+             loginThread.setSocket(null);
          } catch (Exception e) {
          	Log.d("LoginAsyncTask", e.getMessage());
          	if(sc != null) {
@@ -113,7 +119,7 @@ public class LoginAsyncTask extends AsyncTask<Integer, Integer, Integer >{
 					ex.printStackTrace();
 				}
          	}
-         	return(0);
-         }      
+         }
+         return(0);
 	 }
 }
