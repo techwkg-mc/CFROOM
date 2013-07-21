@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jp.co.basenet.wg.cfroom.beans.FileDetailInfo;
 
@@ -60,77 +61,104 @@ public class FileListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
             mainThread.sc.write(buffer);
 
             //結果取得
-            buffer = ByteBuffer.allocate(10240);
-            while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
-                if(numBytesRead == 0 ) {
+            buffer = ByteBuffer.allocate(532*10);
+            boolean firstRecord = true;
+            int seqNo = 0;
+            int recordCount = 0;
+            byte[] tempRecord = null;
+            byte[] tempResult = null;
+            HashMap<Integer, byte[]> resultMap = new HashMap<Integer, byte[]>();
+            while(mainThread.sc.read(buffer) != -1) {
+                if(buffer.position() < 532) {
                     continue;
                 }
                 buffer.flip();
-                status = buffer.getInt();
-                if(status != 2201) {
-                    //TODO
-                }
-                length = buffer.getInt();
-                byte[] bytes = new byte[length];
-                buffer.get(bytes);
-                String fileDetailInfoJson = new String(bytes, "UTF-8");
-                Type listType = new TypeToken<ArrayList<FileDetailInfo>>(){}.getType();
-                fileDetailInfoList = new Gson().fromJson(fileDetailInfoJson, listType);
-                break;
-            }
-
-            //2102 -- ファイル転送リクエスト
-            for(int i = 0; i < fileDetailInfoList.size(); i++ ) {
-                status = 2102;
-                message = gson.toJson(fileDetailInfoList.get(i)).getBytes(Charset.forName("UTF-8"));
-                allLength = message.length;
-                buffer = ByteBuffer.allocate(8 + allLength);
-                buffer.putInt(status);
-                buffer.putInt(allLength);
-                buffer.put(message);
-                buffer.flip();
-
-                //送信
-                mainThread.sc.write(buffer);
-
-                //結果取得
-                //TODO データベースを使うべし
-                boolean firstRecord = true;
-                byte[] bytes = null;
-                int currentSize = 0;
-                int recordSize = 0;
-                buffer = ByteBuffer.allocate(1024);
-                while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
-                    if(numBytesRead == 0 ) {
+                while(buffer.remaining() >= 532) {
+                    status = buffer.getInt();
+                    buffer.getInt();//currentSize
+                    buffer.getInt();//fullSize
+                    seqNo = buffer.getInt();
+                    recordCount = buffer.getInt();
+                    tempRecord = new byte[512];
+                    buffer.get(tempRecord);
+                    if(status != 2201) {
                         continue;
                     }
-                    buffer.flip();
                     if(firstRecord) {
-                        status = buffer.getInt();
-                        if(status != 2202) {
-                            //TODO
-                        }
-                        length = buffer.getInt();
-                        bytes = new byte[length];
+                        //一つ目のレコード
+                        tempResult = new byte[512 * recordCount];
                         firstRecord = false;
                     }
-                    currentSize = buffer.remaining();
-
-
-
-
-                    // length alllength 追加必要
-
-
-
-                    buffer.get(bytes, recordSize, currentSize);
-                    //buffer.get(bytes);
-                    recordSize += currentSize;
-                    buffer.clear();
+                    resultMap.put(seqNo, tempRecord);
+                }
+                buffer.compact();
+                if(resultMap.size() == recordCount) {
+                    break;
                 }
             }
 
-            return (0);
+            if(resultMap.size() > 0) {
+                //取得したファイルリストを元にファイルを取得
+                for(int i = 0; i < resultMap.size(); i++ ) {
+                    System.arraycopy(resultMap.get(i + 1), 0, tempResult, 512 * i, 512);
+                }
+
+                String roomButtonListJson = new String(tempResult, Charset.forName("UTF-8")).trim();
+                Type listType = new TypeToken<ArrayList<FileDetailInfo>>(){}.getType();
+                fileDetailInfoList = new Gson().fromJson(roomButtonListJson, listType);
+
+
+                //2102 -- ファイル転送リクエスト
+                for(int i = 0; i < fileDetailInfoList.size(); i++ ) {
+                    status = 2102;
+                    message = gson.toJson(fileDetailInfoList.get(i)).getBytes(Charset.forName("UTF-8"));
+                    allLength = message.length;
+                    buffer = ByteBuffer.allocate(8 + allLength);
+                    buffer.putInt(status);
+                    buffer.putInt(allLength);
+                    buffer.put(message);
+                    buffer.flip();
+
+                    //送信
+                    mainThread.sc.write(buffer);
+
+                    //結果取得
+                    //TODO データベースを使うべし
+                    firstRecord = true;
+                    byte[] bytes = null;
+                    int currentSize = 0;
+                    int recordSize = 0;
+                    buffer = ByteBuffer.allocate(1024);
+                    while((numBytesRead = mainThread.sc.read(buffer)) != -1) {
+                        if(numBytesRead == 0 ) {
+                            continue;
+                        }
+                        buffer.flip();
+                        if(firstRecord) {
+                            status = buffer.getInt();
+                            if(status != 2202) {
+                                //TODO
+                            }
+                            length = buffer.getInt();
+                            bytes = new byte[length];
+                            firstRecord = false;
+                        }
+                        currentSize = buffer.remaining();
+
+
+
+
+                        // length alllength 追加必要
+
+
+
+                        buffer.get(bytes, recordSize, currentSize);
+                        //buffer.get(bytes);
+                        recordSize += currentSize;
+                        buffer.clear();
+                    }
+                }
+            }
         } catch (Exception e) {
             if(mainThread.sc != null) {
                 try {
@@ -141,7 +169,7 @@ public class FileListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
                     ex.printStackTrace();
                 }
             }
-            return(0);
         }
+        return(0);
     }
 }
