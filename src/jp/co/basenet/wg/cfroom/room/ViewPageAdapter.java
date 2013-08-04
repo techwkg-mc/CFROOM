@@ -1,6 +1,7 @@
 package jp.co.basenet.wg.cfroom.room;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
@@ -21,10 +22,11 @@ import jp.co.basenet.wg.cfroom.R;
 import jp.co.basenet.wg.cfroom.thread.ThreadSend;
 
 public class ViewPageAdapter extends PagerAdapter {
-    private static int itemSize = 5;
+    //private static int itemSize = 5;
+    private static int itemSize = 0;
     private ThreadSend ts;
     private LayoutInflater inflater = null;
-    private ArrayList<Map<String, Object>> items;
+    private ArrayList<Bitmap> imageList = new ArrayList<Bitmap>();
 
     public ViewPageAdapter(Context context, ThreadSend ts) {
         super();
@@ -32,9 +34,14 @@ public class ViewPageAdapter extends PagerAdapter {
         this.ts = ts;
     }
 
-    public void setListData(ArrayList<Map<String, Object>> data) {
-        this.items = data;
+    public void add(Bitmap bitmap) {
+        itemSize++;
+        imageList.add(bitmap);
     }
+
+    //public void setListData(ArrayList<Map<String, Object>> data) {
+    //    this.items = data;
+    //}
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
@@ -59,6 +66,9 @@ public class ViewPageAdapter extends PagerAdapter {
                 return false;
             }
         });
+        if(imageList.size() > 0) {
+            img.setImageBitmap(imageList.get(position));
+        }
 
         container.addView(layout);
         return layout;
@@ -71,12 +81,17 @@ public class ViewPageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return itemSize;
+        return imageList.size();
     }
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view.equals(object);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
     public static int N() {

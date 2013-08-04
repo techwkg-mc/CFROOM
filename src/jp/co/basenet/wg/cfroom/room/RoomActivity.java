@@ -22,12 +22,13 @@ import jp.co.basenet.wg.cfroom.thread.ThreadReveive;
 import jp.co.basenet.wg.cfroom.thread.ThreadSend;
 
 public class RoomActivity extends Activity {
-	
-	public MainHandler myHandler;
+
+    public MainHandler myHandler;
     public static int roomId;
-	private ThreadSend ts;
-	private ThreadReveive tr;
+    protected ThreadSend ts;
+    protected ThreadReveive tr;
 	public static SocketChannel sc;
+    protected ViewPageAdapter vpa;
 	/*
 	public void setSocket(SocketChannel sc) {
 		this.sc = sc;
@@ -38,11 +39,7 @@ public class RoomActivity extends Activity {
         setContentView(R.layout.activity_room);
 
         fileListRefresh();
-        
-    	//ts = new ThreadSend(sc);
-    	//ts.start();
-    	//tr = new ThreadReveive(sc, RoomActivity.this);
-    	//tr.start();
+
         /*
         Button btn1 = (Button)findViewById(R.id.btnExit);
         btn1.setOnClickListener(new View.OnClickListener() {
@@ -60,14 +57,8 @@ public class RoomActivity extends Activity {
             }
         });*/
 
-        CustomViewPager vp = (CustomViewPager)findViewById(R.id.canvasView1);
-        ViewPageAdapter vpa = new ViewPageAdapter(this, ts);
-        vp.setAdapter(vpa);
-        int currentPosition = 0;
-        vp.setCurrentItem(currentPosition);
-        vp.setScanScroll(true);
 
-        myHandler = new MainHandler();
+
     }
 	
 	public class MainHandler extends Handler {
