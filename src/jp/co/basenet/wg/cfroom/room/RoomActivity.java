@@ -17,6 +17,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import jp.co.basenet.wg.cfroom.R;
+import jp.co.basenet.wg.cfroom.lobby.LobbyActivity;
 import jp.co.basenet.wg.cfroom.login.LoginActivity;
 import jp.co.basenet.wg.cfroom.thread.ThreadReveive;
 import jp.co.basenet.wg.cfroom.thread.ThreadSend;
@@ -40,22 +41,20 @@ public class RoomActivity extends Activity {
 
         fileListRefresh();
 
-        /*
-        Button btn1 = (Button)findViewById(R.id.btnExit);
-        btn1.setOnClickListener(new View.OnClickListener() {
-        	@Override
-            public void onClick(View v){
-        		try {
-					sc.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					Intent intent = new Intent(RoomActivity.this, LoginActivity.class);
-                    RoomActivity.this.startActivity(intent);
-				}
+
+        //ロビーに戻る
+        Button btnBackToLobby = (Button)findViewById(R.id.btnBackToLobby);
+        btnBackToLobby.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ts.halt();
+                tr.halt();
+
+                Intent intent = new Intent(RoomActivity.this, LobbyActivity.class);
+                LobbyActivity.sc = RoomActivity.sc;
+                RoomActivity.this.startActivity(intent);
             }
-        });*/
+        });
 
 
 

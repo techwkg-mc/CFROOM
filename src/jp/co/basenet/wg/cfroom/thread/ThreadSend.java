@@ -11,14 +11,21 @@ import android.util.Log;
 public class ThreadSend extends Thread{
 	private SocketChannel sc;
 	public ChildHandler myHandler;
+    private boolean halt_;
 	
 	public ThreadSend(SocketChannel sc) {
 		this.sc = sc;
 	}
+
+    public void halt() {
+        halt_ = true;
+        interrupt();
+    }
 	
 	@Override
 	public void run() {
 		Looper.prepare();
+        halt_ = false;
 		myHandler = new ChildHandler();
 		Looper.loop();
 	}

@@ -50,7 +50,8 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:layout_centerVertical="true"
-        android:layout_alignLeft="@+id/txtPassword"/>
+        android:layout_alignLeft="@+id/txtPassword"
+        android:textSize="12sp"/>
 
     <EditText
         android:id="@+id/txtIPAdress"

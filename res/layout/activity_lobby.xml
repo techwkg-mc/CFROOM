@@ -28,6 +28,7 @@
                 android:id="@+id/btnLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="12sp"
                 android:text="ログアウト"
                 android:layout_alignParentLeft="true"/>
 
@@ -37,6 +38,7 @@
                 android:id="@+id/btnFresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="12sp"
                 android:text="更新"
                 android:layout_alignParentRight="true"/>
     </RelativeLayout>

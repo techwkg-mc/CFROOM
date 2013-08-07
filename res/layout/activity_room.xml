@@ -27,56 +27,64 @@
             android:layout_gravity="center">
         <Button
                 android:id="@+id/btnBackToLobby"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="退室"
+                android:textSize="12sp"
+                android:text="退"
                 android:layout_alignParentLeft="true"/>
         <Button
                 android:id="@+id/btnShowMarker"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="入室"
+                android:textSize="12sp"
+                android:text="表"
                 android:layout_alignParentRight="true"/>
 
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="開始"
+                android:textSize="12sp"
+                android:text="開"
                 android:id="@+id/btnStart"
                 android:layout_toLeftOf="@+id/btnMemberList"/>
 
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="参加者"
+                android:textSize="12sp"
+                android:text="参"
                 android:id="@+id/btnMemberList"
                 android:layout_toLeftOf="@+id/btnSyncSet"/>
 
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="同期"
+                android:textSize="12sp"
+                android:text="同"
                 android:id="@+id/btnSyncSet"
                 android:layout_toLeftOf="@+id/btnMarkerOnOFF"/>
 
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="マーカー"
+                android:textSize="12sp"
+                android:text="マ"
                 android:id="@+id/btnMarkerOnOFF"
                 android:layout_toLeftOf="@+id/btnMarkerSet"/>
 
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="設定"
+                android:textSize="12sp"
+                android:text="設"
                 android:id="@+id/btnMarkerSet"
                 android:layout_toLeftOf="@+id/btnClear"/>
 
         <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="クリア"
+                android:textSize="12sp"
+                android:text="ク"
                 android:id="@+id/btnClear"
                 android:layout_alignParentRight="false"
                 android:layout_toLeftOf="@+id/btnShowMarker"/>

@@ -13,6 +13,7 @@ import jp.co.basenet.wg.cfroom.room.RoomActivity;
 public class ThreadReveive extends Thread{
 	private SocketChannel sc;
 	private RoomActivity mainThread;
+    private boolean halt_;
 	
 	public ThreadReveive(SocketChannel sc,RoomActivity mainThread) {
 		this.sc = sc;
@@ -21,8 +22,14 @@ public class ThreadReveive extends Thread{
 	
 	@Override
 	public void run() {
+        halt_ = false;
 		receiveObj(sc);
 	}
+
+    public void halt() {
+        halt_ = true;
+        interrupt();
+    }
 	
 	private void receiveObj(SocketChannel sc) {
 		Log.d("ThreadReceive", "Start...");
@@ -31,7 +38,7 @@ public class ThreadReveive extends Thread{
 			//is = new BufferedInputStream(socket.getInputStream());
 			buffer.clear();
 			int numBytesRead;
-			while((numBytesRead = sc.read(buffer)) != -1) {
+			while(!halt_ && ((numBytesRead = sc.read(buffer)) != -1)) {
 				if(numBytesRead == 0 ) {
 					//
 					continue;
@@ -55,16 +62,15 @@ public class ThreadReveive extends Thread{
 			}
 		} catch (Exception e) {
 			Log.d("ThreadReceive", "socket.close");
-		} finally {
-			try {
-				if(null != sc) {
-					sc.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+            try {
+                if(null != sc) {
+                    sc.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 		}
 	}
 }

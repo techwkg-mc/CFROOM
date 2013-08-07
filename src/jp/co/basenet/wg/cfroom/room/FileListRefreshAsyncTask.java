@@ -191,7 +191,9 @@ public class FileListRefreshAsyncTask extends AsyncTask<Integer, Integer, Intege
                         }
                         //ここは修正必要
                         //TODO
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(tempResult, 0, tempResult.length);
+                        BitmapFactory.Options bmfOptions = new BitmapFactory.Options();
+                        bmfOptions.inPurgeable = true;
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(tempResult, 0, tempResult.length,bmfOptions);
                         bitmapList.add(bitmap);
                     }
                 }
